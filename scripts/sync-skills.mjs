@@ -9,7 +9,8 @@ import process from 'node:process';
 import { fileURLToPath } from 'node:url';
 
 export const kit = join(dirname(fileURLToPath(import.meta.url)), '..');
-export const COPY_ROOT = join(kit, 'template', "{% if skills_from == 'repo' %}.agents{% endif %}");
+// Copier leaves this folder out for projects that use the plugin (copier.yml).
+export const COPY_ROOT = join(kit, 'template', '.agents');
 export const COPIES = [
   [join(kit, 'plugin/skills'), join(COPY_ROOT, 'skills')],
   [join(kit, 'plugin/hooks/knowledge-reminder.mjs'), join(COPY_ROOT, 'hooks/knowledge-reminder.mjs')],

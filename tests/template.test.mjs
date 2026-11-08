@@ -90,7 +90,11 @@ if (needCopier && !copier) throw new Error('REQUIRE_COPIER is set, but copier is
 const render = (answers) => {
   const out = mkdtempSync(join(tmpdir(), 'agent-kit-render-'));
   const data = Object.entries(answers).flatMap(([key, value]) => ['-d', `${key}=${value}`]);
-  execFileSync('copier', ['copy', '--defaults', '--quiet', ...data, kit, out], { stdio: 'pipe' });
+  // HEAD, not the latest release tag Copier would pick by default, so this
+  // tests the kit as it is now.
+  execFileSync('copier', ['copy', '--defaults', '--quiet', '--vcs-ref', 'HEAD', ...data, kit, out], {
+    stdio: 'pipe',
+  });
   return out;
 };
 
@@ -171,6 +175,7 @@ test('copier records the exact release and updates to the next one', { skip: !co
     }
     // The clone has the committed kit; copy the working tree over it so this
     // tests the files as they are now.
+    rmSync(join(repo, 'template'), { recursive: true, force: true });
     execFileSync('cp', ['-a', `${kit}/template`, `${kit}/copier.yml`, repo]);
     git(repo, 'add', '-A');
     git(repo, 'commit', '-qm', 'kit', '--allow-empty');
@@ -179,6 +184,8 @@ test('copier records the exact release and updates to the next one', { skip: !co
     const data = ['-d', 'product_name=Sample', '-d', 'github_owner=someone'];
     execFileSync('copier', ['copy', '--defaults', '--quiet', ...data, repo, out], { stdio: 'pipe' });
     assert.match(answers(), /^_commit: v1\.0\.0$/m);
+    // Rendered from a git tag, as projects do, the skill links still work.
+    assert.ok(existsSync(join(out, '.claude/skills/knowledge-review/SKILL.md')));
     git(out, 'init', '-q');
     git(out, 'add', '-A');
     git(out, 'commit', '-qm', 'start');
