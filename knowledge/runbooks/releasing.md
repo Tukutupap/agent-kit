@@ -23,4 +23,6 @@ Projects pick up a release three ways, and each needs something from the release
 5. For a new major version, change `kit_version` in `copier.yml` so new projects call it, and say in the release notes what projects must change.
 6. Open a pull request in `Tukutupap/agent-kit-test` to see the checks run from the new tag ([lesson](/lessons/actions-download-the-whole-kit.md)).
 
+The release tag is annotated and the major tag lightweight. With two lightweight tags on one commit, Copier recorded `_commit: v1` in a project, and once `v1` moved, `copier update` saw nothing to update (#8). A project that recorded `_commit: v1` needs that line changed by hand to the release it was made from (such as `v1.0.0`) before its next `copier update`.
+
 Cloud sessions can't push tags, and a local agent's safety check may refuse to, which is why the workflow does it ([ASM-006](/decisions/asm/asm-006-release-workflow.md)).

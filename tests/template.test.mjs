@@ -145,3 +145,52 @@ for (const { name, answers } of cases) {
     }
   });
 }
+
+// Releases have an annotated vX.Y.Z tag and a lightweight vX that moves (see
+// .github/workflows/release.yml). Copier must record the exact release, or a
+// project can't be updated once vX moves (#8).
+test('copier records the exact release and updates to the next one', { skip: !copier }, () => {
+  const work = mkdtempSync(join(tmpdir(), 'agent-kit-release-'));
+  const repo = join(work, 'kit');
+  const out = join(work, 'project');
+  const git = (cwd, ...args) =>
+    execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', ...args], {
+      cwd,
+      stdio: 'pipe',
+      encoding: 'utf8',
+    });
+  const release = (version) => {
+    git(repo, 'tag', '-a', `v${version}`, '-m', `v${version}`);
+    git(repo, 'tag', '-f', 'v1', `v${version}^{}`);
+  };
+  const answers = () => readFileSync(join(out, '.copier-answers.yml'), 'utf8');
+  try {
+    execFileSync('git', ['clone', '-q', '--no-local', kit, repo], { stdio: 'pipe' });
+    for (const tag of git(repo, 'tag', '--list').split('\n').filter(Boolean)) {
+      git(repo, 'tag', '-d', tag);
+    }
+    // The clone has the committed kit; copy the working tree over it so this
+    // tests the files as they are now.
+    execFileSync('cp', ['-a', `${kit}/template`, `${kit}/copier.yml`, repo]);
+    git(repo, 'add', '-A');
+    git(repo, 'commit', '-qm', 'kit', '--allow-empty');
+    release('1.0.0');
+
+    const data = ['-d', 'product_name=Sample', '-d', 'github_owner=someone'];
+    execFileSync('copier', ['copy', '--defaults', '--quiet', ...data, repo, out], { stdio: 'pipe' });
+    assert.match(answers(), /^_commit: v1\.0\.0$/m);
+    git(out, 'init', '-q');
+    git(out, 'add', '-A');
+    git(out, 'commit', '-qm', 'start');
+
+    execFileSync('sh', ['-c', 'echo "- A new kit rule." >> template/GEMINI.md'], { cwd: repo });
+    git(repo, 'commit', '-qam', 'change');
+    release('1.0.1');
+
+    execFileSync('copier', ['update', '--defaults', '--quiet'], { cwd: out, stdio: 'pipe' });
+    assert.match(answers(), /^_commit: v1\.0\.1$/m);
+    assert.match(readFileSync(join(out, 'GEMINI.md'), 'utf8'), /A new kit rule/);
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});
