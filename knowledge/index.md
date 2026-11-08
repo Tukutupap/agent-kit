@@ -46,6 +46,10 @@ The kit's parts are described in the [README](https://github.com/Tukutupap/agent
 
 Each missing, unverified or deferred item is a file in `launch/gaps/`, with `gap_status` `open` or `resolved`. Search that folder by topic, ID or status. New ones use the [template](/launch/gaps/gap-000-template.md).
 
+## Lessons
+
+- [Actions download the whole kit](/lessons/actions-download-the-whole-kit.md): Why a broken symlink anywhere in the kit breaks every check.
+
 ## References
 
 - [Source map](/references/source-map.md): Where each part of the kit came from, so improvements can flow both ways.

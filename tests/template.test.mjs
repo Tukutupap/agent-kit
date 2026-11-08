@@ -6,6 +6,7 @@ import {
   mkdtempSync,
   readdirSync,
   readFileSync,
+  realpathSync,
   rmSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -34,6 +35,21 @@ test('the template carries the same skills and hook as the plugin', () => {
       const b = name === '.' ? to : join(to, name);
       assert.equal(readFileSync(b, 'utf8'), readFileSync(a, 'utf8'), `${name}: run npm run sync:skills`);
     }
+  }
+});
+
+// GitHub downloads the whole kit to run an action, and a symlink whose target
+// doesn't exist in the kit makes that download fail for every check.
+test('every symlink in the kit points at something in the kit', () => {
+  const links = (path) => {
+    const stat = lstatSync(path);
+    if (stat.isSymbolicLink()) return [path];
+    if (!stat.isDirectory() || path.endsWith('.git')) return [];
+    return readdirSync(path).flatMap((name) => links(join(path, name)));
+  };
+  for (const link of links(kit)) {
+    assert.ok(existsSync(link), `${relative(kit, link)} points at nothing`);
+    assert.ok(!relative(kit, realpathSync(link)).startsWith('..'), `${relative(kit, link)} leaves the kit`);
   }
 });
 
