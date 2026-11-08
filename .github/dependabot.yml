@@ -1,0 +1,16 @@
+# Keeps the GitHub Actions used by the kit's own workflows and checks current.
+# The kit has no npm dependencies. The setup-node version inside
+# checks/*/action.yml is updated by hand, because Dependabot only reads
+# .github/workflows.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      actions:
+        patterns: ['*']
+    commit-message:
+      prefix: Update

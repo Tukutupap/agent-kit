@@ -1,0 +1,15 @@
+# Keeps the GitHub Actions used by this project's workflows current, including
+# the agent kit's checks, so a new kit version arrives as a pull request.
+# Add the project's own package ecosystems below.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      actions:
+        patterns: ['*']
+    commit-message:
+      prefix: Update

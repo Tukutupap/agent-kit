@@ -1,0 +1,32 @@
+name: Pull request format
+description: Checks a pull request's title and description against the project's pull request template.
+
+inputs:
+  title:
+    description: The pull request title. Pass github.event.pull_request.title.
+    required: true
+  body:
+    description: The pull request description. Pass github.event.pull_request.body.
+    required: false
+    default: ''
+  author:
+    description: The pull request author's login. Bots listed in agent-kit.json are skipped.
+    required: false
+    default: ''
+
+# The title and description reach the script through the environment, so
+# nothing a person typed there is ever run as a command.
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v5
+      with:
+        node-version: 22
+        package-manager-cache: false
+    - name: Check the title and description
+      shell: bash
+      run: node "$GITHUB_ACTION_PATH/../../scripts/pr-format-check.mjs" "$GITHUB_WORKSPACE"
+      env:
+        PR_TITLE: ${{ inputs.title }}
+        PR_BODY: ${{ inputs.body }}
+        PR_AUTHOR: ${{ inputs.author }}

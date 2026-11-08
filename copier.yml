@@ -1,0 +1,74 @@
+# Copier template for the agent kit. Projects start with
+#   copier copy gh:Tukutupap/agent-kit .
+# and pick up later kit changes with
+#   copier update
+# Everything a project writes for itself stays its own: copier update only
+# brings in what changed in the kit since the project's last update.
+
+_subdirectory: template
+_min_copier_version: "9.4"
+_answers_file: .copier-answers.yml
+_preserve_symlinks: true
+_templates_suffix: .jinja
+# Pure product content. The kit writes a starting point once and never touches it again.
+_skip_if_exists:
+  - knowledge/product/prd.md
+  - knowledge/references/site-sweeps.md
+  - knowledge/environment/testing.md
+  - agent-kit.json
+
+product_name:
+  type: str
+  help: The product's name, as people write it
+  validator: "{% if not product_name.strip() %}Give the product a name{% endif %}"
+
+product_summary:
+  type: str
+  help: One sentence saying what the product is and who it's for
+  default: ""
+
+github_owner:
+  type: str
+  help: The GitHub user or organization that owns the repository
+  validator: "{% if not github_owner.strip() %}Needed for links and the board{% endif %}"
+
+github_repo:
+  type: str
+  help: The repository's name on GitHub
+  default: "{{ product_name | lower | replace(' ', '-') }}"
+
+board_number:
+  type: int
+  help: The number of the GitHub Projects board that tracks issues (from its URL), or 0 for none
+  default: 0
+
+board_owner:
+  type: str
+  help: The user or organization that owns the board
+  default: "{{ github_owner }}"
+  when: "{{ board_number > 0 }}"
+
+test_command:
+  type: str
+  help: The command that runs the full test suite locally
+  default: npm test
+
+skills_from:
+  type: str
+  help: Where Claude Code gets the kit's skills and knowledge reminder hook
+  choices:
+    "Copied into this repository (works in every agent and in cloud sessions)": repo
+    "The agent-kit Claude Code plugin (updates by plugin version)": plugin
+  default: repo
+
+# Not asked. The kit's location, and the version its checks are called at.
+# Dependabot proposes newer versions of the checks in each project.
+kit_repo:
+  type: str
+  default: Tukutupap/agent-kit
+  when: false
+
+kit_version:
+  type: str
+  default: v1
+  when: false

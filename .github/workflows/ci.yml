@@ -1,0 +1,52 @@
+name: CI
+
+# The kit's own checks: the scripts' tests, the template rendered with
+# Copier and checked with the kit's own checks, and the plugin manifests.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Tests and template
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # Copier renders from git, so it needs the history and tags.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Install Copier
+        run: pip install 'copier>=9.4,<10'
+
+      - name: Run the tests
+        run: node --test tests/*.test.mjs
+        env:
+          REQUIRE_COPIER: 'true'
+
+  knowledge:
+    name: Knowledge structure
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      # The kit checks its own knowledge/ with the action projects use.
+      - uses: ./checks/knowledge

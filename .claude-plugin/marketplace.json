@@ -1,0 +1,17 @@
+{
+  "name": "agent-kit",
+  "owner": {
+    "name": "Vicente"
+  },
+  "metadata": {
+    "description": "The agent kit's Claude Code plugin."
+  },
+  "plugins": [
+    {
+      "name": "agent-kit",
+      "source": "./plugin",
+      "description": "Knowledge review and site sweep skills, and a reminder to update knowledge/ when code changes.",
+      "version": "1.0.0"
+    }
+  ]
+}

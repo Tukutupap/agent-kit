@@ -1,0 +1,16 @@
+{
+  "description": "Reminds the agent once when code changed on the branch but knowledge/ didn't.",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/knowledge-reminder.mjs\"",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  }
+}

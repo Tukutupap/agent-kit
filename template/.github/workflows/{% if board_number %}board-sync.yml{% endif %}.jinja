@@ -1,0 +1,96 @@
+name: Board sync
+
+# Keeps project {{ board_number }} (the board) in sync. Claude cloud sessions can't reach
+# GitHub's project APIs, but they can start this workflow, which can.
+# See knowledge/decisions/issue-workflow.md, "Keeping the board in sync".
+#
+# Most of it runs on its own from changes to issues and pull requests:
+# - An open issue is assigned: Status In progress.
+# - An issue gets a P1, P2 or P3 label: Priority to match.
+# - A pull request opens or is marked ready: every issue in its "Fixes #N"
+#   lines moves to In review.
+# Started by hand or by a session, it sets Status and Priority on a list of
+# issues, adding them to the board first if needed, for anything else.
+#
+# It needs the PROJECT_TOKEN repository secret, a token with Projects read and
+# write for {{ board_owner }}. Without it, the automatic jobs skip with a warning
+# and a manual run fails. The script comes from the agent kit.
+on:
+  workflow_dispatch:
+    inputs:
+      issues:
+        description: Issue or pull request numbers, such as "418 419" or "418-434"
+        required: true
+        type: string
+      status:
+        description: Status to set
+        required: false
+        default: unchanged
+        type: choice
+        options: [unchanged, Backlog, Needs decision, Ready, In progress, In review, Blocked, Done]
+      priority:
+        description: Priority to set
+        required: false
+        default: unchanged
+        type: choice
+        options: [unchanged, P1, P2, P3]
+  pull_request:
+    types: [opened, reopened, ready_for_review]
+  issues:
+    types: [assigned, labeled]
+
+permissions:
+  contents: read
+
+jobs:
+  manual:
+    name: Set board fields
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: {{ kit_repo }}/checks/board-sync@{{ kit_version }}
+        with:
+          token: {% raw %}${{ secrets.PROJECT_TOKEN }}{% endraw %}
+          board-number: {{ board_number }}
+          board-owner: {{ board_owner }}
+          issues: {% raw %}${{ inputs.issues }}{% endraw %}
+          status: {% raw %}${{ inputs.status }}{% endraw %}
+          priority: {% raw %}${{ inputs.priority }}{% endraw %}
+          require-token: 'true'
+
+  in-review:
+    name: Move fixed issues to In review
+    # Pull requests from forks don't get secrets, so only run for branches here.
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: {{ kit_repo }}/checks/board-sync@{{ kit_version }}
+        with:
+          token: {% raw %}${{ secrets.PROJECT_TOKEN }}{% endraw %}
+          board-number: {{ board_number }}
+          board-owner: {{ board_owner }}
+          pr-body: {% raw %}${{ github.event.pull_request.body }}{% endraw %}
+          status: In review
+
+  issue-change:
+    name: Follow issue changes
+    # Assigned while open means work started. A P1, P2 or P3 label sets Priority.
+    if: >-
+      github.event_name == 'issues' &&
+      ((github.event.action == 'assigned' && github.event.issue.state == 'open') ||
+       (github.event.action == 'labeled' && contains(fromJSON('["P1","P2","P3"]'), github.event.label.name)))
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: {{ kit_repo }}/checks/board-sync@{{ kit_version }}
+        with:
+          token: {% raw %}${{ secrets.PROJECT_TOKEN }}{% endraw %}
+          board-number: {{ board_number }}
+          board-owner: {{ board_owner }}
+          issues: {% raw %}${{ github.event.issue.number }}{% endraw %}
+          status: {% raw %}${{ github.event.action == 'assigned' && 'In progress' || 'unchanged' }}{% endraw %}
+          priority: {% raw %}${{ github.event.action == 'labeled' && github.event.label.name || 'unchanged' }}{% endraw %}
