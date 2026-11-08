@@ -48,7 +48,7 @@ Each missing, unverified or deferred item is a file in `launch/gaps/`, with `gap
 
 ## Lessons
 
-- [Actions download the whole kit](/lessons/actions-download-the-whole-kit.md): Why a broken symlink anywhere in the kit breaks every check.
+- [Actions download the whole kit](/lessons/actions-download-the-whole-kit.md): Why a broken symlink anywhere in the kit breaks every check, and why release tags are annotated.
 
 ## References
 

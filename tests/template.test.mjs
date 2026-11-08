@@ -90,7 +90,11 @@ if (needCopier && !copier) throw new Error('REQUIRE_COPIER is set, but copier is
 const render = (answers) => {
   const out = mkdtempSync(join(tmpdir(), 'agent-kit-render-'));
   const data = Object.entries(answers).flatMap(([key, value]) => ['-d', `${key}=${value}`]);
-  execFileSync('copier', ['copy', '--defaults', '--quiet', ...data, kit, out], { stdio: 'pipe' });
+  // HEAD, not the latest release tag Copier would pick by default, so this
+  // tests the kit as it is now.
+  execFileSync('copier', ['copy', '--defaults', '--quiet', '--vcs-ref', 'HEAD', ...data, kit, out], {
+    stdio: 'pipe',
+  });
   return out;
 };
 
@@ -145,3 +149,55 @@ for (const { name, answers } of cases) {
     }
   });
 }
+
+// Releases have an annotated vX.Y.Z tag and a lightweight vX that moves (see
+// .github/workflows/release.yml). Copier must record the exact release, or a
+// project can't be updated once vX moves (#8).
+test('copier records the exact release and updates to the next one', { skip: !copier }, () => {
+  const work = mkdtempSync(join(tmpdir(), 'agent-kit-release-'));
+  const repo = join(work, 'kit');
+  const out = join(work, 'project');
+  const git = (cwd, ...args) =>
+    execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', ...args], {
+      cwd,
+      stdio: 'pipe',
+      encoding: 'utf8',
+    });
+  const release = (version) => {
+    git(repo, 'tag', '-a', `v${version}`, '-m', `v${version}`);
+    git(repo, 'tag', '-f', 'v1', `v${version}^{}`);
+  };
+  const answers = () => readFileSync(join(out, '.copier-answers.yml'), 'utf8');
+  try {
+    execFileSync('git', ['clone', '-q', '--no-local', kit, repo], { stdio: 'pipe' });
+    for (const tag of git(repo, 'tag', '--list').split('\n').filter(Boolean)) {
+      git(repo, 'tag', '-d', tag);
+    }
+    // The clone has the committed kit; copy the working tree over it so this
+    // tests the files as they are now.
+    rmSync(join(repo, 'template'), { recursive: true, force: true });
+    execFileSync('cp', ['-a', `${kit}/template`, `${kit}/copier.yml`, repo]);
+    git(repo, 'add', '-A');
+    git(repo, 'commit', '-qm', 'kit', '--allow-empty');
+    release('1.0.0');
+
+    const data = ['-d', 'product_name=Sample', '-d', 'github_owner=someone'];
+    execFileSync('copier', ['copy', '--defaults', '--quiet', ...data, repo, out], { stdio: 'pipe' });
+    assert.match(answers(), /^_commit: v1\.0\.0$/m);
+    // Rendered from a git tag, as projects do, the skill links still work.
+    assert.ok(existsSync(join(out, '.claude/skills/knowledge-review/SKILL.md')));
+    git(out, 'init', '-q');
+    git(out, 'add', '-A');
+    git(out, 'commit', '-qm', 'start');
+
+    execFileSync('sh', ['-c', 'echo "- A new kit rule." >> template/GEMINI.md'], { cwd: repo });
+    git(repo, 'commit', '-qam', 'change');
+    release('1.0.1');
+
+    execFileSync('copier', ['update', '--defaults', '--quiet'], { cwd: out, stdio: 'pipe' });
+    assert.match(answers(), /^_commit: v1\.0\.1$/m);
+    assert.match(readFileSync(join(out, 'GEMINI.md'), 'utf8'), /A new kit rule/);
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+});

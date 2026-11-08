@@ -1,1 +1,0 @@
-../../{% if skills_from == 'repo' %}.agents{% endif %}/skills/knowledge-review

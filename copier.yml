@@ -10,6 +10,19 @@ _min_copier_version: "9.4"
 _answers_file: .copier-answers.yml
 _preserve_symlinks: true
 _templates_suffix: .jinja
+# Copies of the plugin's skills and hook, only for projects that keep them in
+# the repository. Kept as plain folders, not Jinja-named ones, so the
+# .claude/skills links point at something inside the kit (#4, #8).
+_exclude:
+  - "{% if skills_from != 'repo' %}.agents{% endif %}"
+  - "{% if skills_from != 'repo' %}.claude/skills{% endif %}"
+  - copier.yml
+  - ~*
+  - "*.py[co]"
+  - __pycache__
+  - .git
+  - .DS_Store
+  - .svn
 # Pure product content. The kit writes a starting point once and never touches it again.
 _skip_if_exists:
   - knowledge/product/prd.md
