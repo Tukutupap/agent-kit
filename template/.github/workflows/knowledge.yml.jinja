@@ -1,0 +1,29 @@
+name: Knowledge
+
+# Runs on pull requests that change knowledge/, and after every merge to main,
+# because two pull requests can each pass and still clash once both are merged.
+# The check comes from the agent kit, at the version named below.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - 'knowledge/**'
+      - 'agent-kit.json'
+      - '.github/workflows/knowledge.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: knowledge-{% raw %}${{ github.head_ref || github.ref_name }}{% endraw %}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Knowledge structure
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: {{ kit_repo }}/checks/knowledge@{{ kit_version }}

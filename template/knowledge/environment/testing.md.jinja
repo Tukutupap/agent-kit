@@ -1,0 +1,19 @@
+---
+type: Guide
+title: Testing
+description: Which suite covers what, how to run it locally, and how CI behaves on GitHub.
+---
+
+# Testing
+
+<!-- Product: written once by the agent kit, then owned by this project. Describe each suite, what it needs, and which checks are required on main. -->
+
+## Locally
+
+`{{ test_command }}` runs the full suite. Run it before opening a pull request ready for review.
+
+## On GitHub
+
+- **Knowledge structure** checks `knowledge/` on pull requests that change it, and after every merge to `main`.
+- **Pull request format** checks the title and description of every pull request.
+<!-- Add this product's own CI checks, and say which are required on main. -->

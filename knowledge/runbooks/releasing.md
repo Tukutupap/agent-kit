@@ -1,0 +1,31 @@
+---
+type: Runbook
+title: Releasing the kit
+description: Version numbers, tags, the plugin version, and how projects pick up a release.
+---
+
+# Releasing the kit
+
+Projects pick up a release three ways, and each needs something from the release:
+
+| Part | How projects get it | What the release needs |
+| --- | --- | --- |
+| Checks in `checks/` and `scripts/` | Dependabot bumps `uses: Tukutupap/agent-kit/checks/<name>@vN`, or the moved `vN` tag reaches them on the next run | A `vX.Y.Z` tag, and the `vX` tag moved to it |
+| Starter files in `template/` | `copier update`, which reads the latest tag | A `vX.Y.Z` tag |
+| Skills and hook in `plugin/` | The plugin version, or `copier update` for projects with copies | `version` bumped in `plugin/.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` and `package.json`, which a test keeps equal |
+
+## Steps
+
+1. Merge the changes to `main`, with `npm run sync:skills` run if `plugin/` changed. CI must pass.
+2. Choose the version. A change that makes a project's workflows, `agent-kit.json` or Copier answers stop working is a new major version. New options are minor, and fixes are patches.
+3. Bump the three version fields in one pull request, if they aren't already.
+4. Tag and move the major tag:
+
+   ```sh
+   git tag v1.2.0 && git tag -f v1 v1.2.0
+   git push origin v1.2.0 && git push -f origin v1
+   ```
+
+5. For a new major version, change `kit_version` in `copier.yml` so new projects call it, and say in the release notes what projects must change.
+
+Cloud sessions can push tags if the session's GitHub access allows it. Otherwise a person runs step 4.

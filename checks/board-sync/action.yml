@@ -1,0 +1,57 @@
+name: Board sync
+description: Sets Status and Priority on a GitHub Projects board for a list of issues, or for the issues a pull request fixes.
+
+inputs:
+  token:
+    description: A token with Projects read and write for the board's owner. Usually secrets.PROJECT_TOKEN.
+    required: false
+    default: ''
+  board-number:
+    description: The board's number, from its URL.
+    required: true
+  board-owner:
+    description: The organization or user that owns the board. Defaults to the repository's owner.
+    required: false
+    default: ''
+  issues:
+    description: Issue numbers, such as "418 419" or "418-434". Leave empty to use pr-body.
+    required: false
+    default: ''
+  pr-body:
+    description: A pull request description, whose "Fixes #N" lines name the issues.
+    required: false
+    default: ''
+  status:
+    description: Status option to set, or "unchanged".
+    required: false
+    default: unchanged
+  priority:
+    description: Priority option to set, or "unchanged".
+    required: false
+    default: unchanged
+  require-token:
+    description: '"true" to fail without a token. Otherwise the run skips with a warning.'
+    required: false
+    default: 'false'
+
+# Inputs reach the script through the environment, so nothing typed into an
+# issue or pull request is ever run as a command.
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v5
+      with:
+        node-version: 22
+        package-manager-cache: false
+    - name: Update the board
+      shell: bash
+      run: node "$GITHUB_ACTION_PATH/../../scripts/board-sync.mjs"
+      env:
+        PROJECT_TOKEN: ${{ inputs.token }}
+        BOARD_NUMBER: ${{ inputs.board-number }}
+        BOARD_OWNER: ${{ inputs.board-owner }}
+        BOARD_ISSUES: ${{ inputs.issues }}
+        BOARD_PR_BODY: ${{ inputs.pr-body }}
+        BOARD_STATUS: ${{ inputs.status }}
+        BOARD_PRIORITY: ${{ inputs.priority }}
+        BOARD_REQUIRE_TOKEN: ${{ inputs.require-token }}

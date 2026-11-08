@@ -1,0 +1,26 @@
+name: Pull request format
+
+# The kit's pull requests follow the format it ships, checked with the same action.
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-format-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Pull request format
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./checks/pr-format
+        with:
+          title: ${{ github.event.pull_request.title }}
+          body: ${{ github.event.pull_request.body }}
+          author: ${{ github.event.pull_request.user.login }}

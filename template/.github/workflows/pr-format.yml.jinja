@@ -1,0 +1,28 @@
+name: Pull request format
+
+# Runs on every pull request, and again when its title or description is edited.
+# The format is in knowledge/decisions/issue-workflow.md, and its sections come
+# from .github/pull_request_template.md. The check comes from the agent kit.
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-format-{% raw %}${{ github.event.pull_request.number }}{% endraw %}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Pull request format
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: {{ kit_repo }}/checks/pr-format@{{ kit_version }}
+        with:
+          title: {% raw %}${{ github.event.pull_request.title }}{% endraw %}
+          body: {% raw %}${{ github.event.pull_request.body }}{% endraw %}
+          author: {% raw %}${{ github.event.pull_request.user.login }}{% endraw %}

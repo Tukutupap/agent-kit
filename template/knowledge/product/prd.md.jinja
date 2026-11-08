@@ -1,0 +1,32 @@
+---
+type: Product
+title: Product requirements
+description: What {{ product_name }} is, who it's for, what changed later, and where each requirement lives.
+---
+
+# {{ product_name }} product requirements
+
+<!-- Product: written once by the agent kit, then owned by this project. -->
+
+## What it is
+
+{% if product_summary %}{{ product_summary }}{% else %}<!-- What the product is, who it's for, and what makes it different. -->{% endif %}
+
+## Who it's for
+
+<!-- The kinds of user, and what each needs. -->
+
+## Scope
+
+<!-- What's in the first version, and what's deliberately left out. -->
+
+## Where requirements live
+
+Each feature's requirements are in the `## Product requirements` section of its page in `knowledge/product/features`. They carry the same precedence as this page.
+
+## Later decisions
+
+Decisions that override a requirement on this page or a feature page. Newest first.
+
+| Date | Decision | Overrides | Record |
+| --- | --- | --- | --- |

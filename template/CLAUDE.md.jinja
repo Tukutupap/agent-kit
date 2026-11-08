@@ -1,0 +1,23 @@
+# CLAUDE.md
+
+{% if product_summary %}{{ product_summary }}{% else %}<!-- One or two sentences saying what {{ product_name }} is, who it's for, and what makes it different. -->{% endif %}
+
+## Start here
+
+@AGENTS.md
+
+Read `knowledge/index.md` at the start of work. `knowledge/` is the only home for project knowledge, and updating it is part of every change, as `AGENTS.md` section 2 says. Don't put project knowledge in auto memory or private notes. Keep those for what's personal or specific to one machine.
+
+## Technology direction
+
+<!-- Product: the stack, where it runs, and the decisions an agent should not reopen, each with its ADR. -->
+
+## Non-negotiables
+
+<!-- Product: the rules that must never break, one per line. Keep them in step with AGENTS.md section 5. -->
+
+- All mocks and gaps must be documented.
+
+## Agent behavior
+
+Do not stop for non-blocking ambiguity. Make secure assumptions, implement them, and record each one as a new file in `knowledge/decisions/asm`. If an external provider requires credentials, build the adapter, mock implementation, configuration contract, and documented setup path.

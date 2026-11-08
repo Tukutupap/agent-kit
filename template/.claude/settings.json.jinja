@@ -1,0 +1,31 @@
+{% if skills_from == 'plugin' -%}
+{
+  "extraKnownMarketplaces": {
+    "agent-kit": {
+      "source": {
+        "source": "github",
+        "repo": "{{ kit_repo }}"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "agent-kit@agent-kit": true
+  }
+}
+{% else -%}
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.agents/hooks/knowledge-reminder.mjs\"",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  }
+}
+{% endif -%}

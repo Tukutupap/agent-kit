@@ -1,0 +1,15 @@
+name: Knowledge check
+description: Checks that a project's knowledge/ folder is well-formed. Headers, IDs, links and the index, laid out as agent-kit.json says.
+
+# The script comes from this action's own copy of the kit, at the version the
+# project's workflow names, so a project needs no install and no copy of it.
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v5
+      with:
+        node-version: 22
+        package-manager-cache: false
+    - name: Check headers, IDs, links and the index
+      shell: bash
+      run: node "$GITHUB_ACTION_PATH/../../scripts/knowledge-check.mjs" "$GITHUB_WORKSPACE"
