@@ -1,0 +1,65 @@
+name: Release
+
+# Tags main as a release, and moves the major tag (such as v1) to it, so
+# projects calling @v1 pick it up. Started from the Actions tab, or by a
+# session with the GitHub MCP actions_run_trigger tool. See
+# knowledge/runbooks/releasing.md.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: The version to release, such as 1.0.1. It must match package.json.
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Tag the release
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      # The version reaches the script through the environment, never as command text.
+      - name: Check the version
+        id: version
+        run: node scripts/release-check.mjs
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+
+      - name: Run the tests
+        run: |
+          pip install 'copier>=9.4,<10'
+          node --test tests/*.test.mjs
+        env:
+          REQUIRE_COPIER: 'true'
+
+      - name: Tag and move the major tag
+        run: |
+          git tag "$TAG"
+          git tag -f "$MAJOR" "$TAG"
+          git push origin "refs/tags/$TAG"
+          git push -f origin "refs/tags/$MAJOR"
+          echo "Released $TAG at $(git rev-parse --short HEAD), and moved $MAJOR to it." >> "$GITHUB_STEP_SUMMARY"
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+          MAJOR: ${{ steps.version.outputs.major }}
