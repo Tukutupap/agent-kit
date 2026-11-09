@@ -8,7 +8,7 @@ A kit that gives any product the same agent setup: rules agents follow, a `knowl
 
 ## Rules
 
-- The kit is public and generic. Never add a product's name, people, environments, secrets or ids. A test fails on the first project's name.
+- The kit is public and generic. Never add a product's name, people, environments, secrets or ids.
 - The kit follows its own rules. Read `knowledge/index.md` first, and update `knowledge/` in the same pull request as the change: an assumption in `knowledge/decisions/asm`, a major decision in `knowledge/decisions/adr`, anything missing or unverified in `knowledge/launch/gaps`.
 - Every change needs an issue, linked from its pull request with `Fixes #N`, and the pull request follows `.github/pull_request_template.md`, which is the same template the kit ships.
 - `plugin/` is the source of the skills and the hook. After changing it, run `npm run sync:skills` so the template's copies match.

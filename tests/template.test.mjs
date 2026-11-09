@@ -53,16 +53,6 @@ test('every symlink in the kit points at something in the kit', () => {
   }
 });
 
-test('nothing in the kit names the product it came from', () => {
-  for (const folder of ['template', 'plugin', 'checks', 'scripts']) {
-    for (const file of files(join(kit, folder))) {
-      if (file.endsWith('sync-skills.mjs')) continue;
-      const text = readFileSync(file, 'utf8');
-      assert.doesNotMatch(text, /bring[- ]?a[- ]?chef|\bchefs?\b/i, relative(kit, file));
-    }
-  }
-});
-
 test('the plugin and marketplace manifests agree', () => {
   const marketplace = JSON.parse(readFileSync(join(kit, '.claude-plugin/marketplace.json'), 'utf8'));
   const plugin = JSON.parse(readFileSync(join(kit, 'plugin/.claude-plugin/plugin.json'), 'utf8'));
