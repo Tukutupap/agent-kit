@@ -7,7 +7,7 @@ tags: [agents, testing]
 
 # Agents in cloud sessions
 
-<!-- From the agent kit. Learned on its first project in November 2026. Add what this product's sessions run into. -->
+<!-- From the agent kit. Add what this product's sessions run into. -->
 
 - **No GitHub GraphQL or Projects API.** The session's proxy refuses both, whatever the token, so a session can't change a Projects board directly. It can start a workflow, which is why board changes go through the Board sync workflow.
 - **No Docker.** Run services from the image instead. For Postgres, use the binaries in `/usr/lib/postgresql/<version>/bin`, run as the `postgres` user with its data and socket under `/var/tmp`. A container restart stops it, so start it again after deleting a stale `postmaster.pid`.
