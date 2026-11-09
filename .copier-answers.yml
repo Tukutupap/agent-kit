@@ -1,0 +1,11 @@
+# Written by Copier from the agent kit. Don't edit by hand: run `copier update`.
+_commit: v1.1.0
+_src_path: gh:Tukutupap/agent-kit
+board_number: 0
+github_owner: Tukutupap
+github_repo: agent-kit
+product_name: Agent kit
+product_summary: Rules, a knowledge base, skills and GitHub checks that give any product
+    the same AI coding agent setup, kept current with Copier.
+skills_from: repo
+test_command: npm test

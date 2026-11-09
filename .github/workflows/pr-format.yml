@@ -1,6 +1,8 @@
 name: Pull request format
 
-# The kit's pull requests follow the format it ships, checked with the same action.
+# Runs on every pull request, and again when its title or description is edited.
+# The format is in knowledge/decisions/issue-workflow.md, and its sections come
+# from .github/pull_request_template.md. The check comes from the agent kit.
 on:
   pull_request:
     types: [opened, edited, reopened, synchronize, ready_for_review]
@@ -19,7 +21,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
-      - uses: ./checks/pr-format
+      - uses: Tukutupap/agent-kit/checks/pr-format@v1
         with:
           title: ${{ github.event.pull_request.title }}
           body: ${{ github.event.pull_request.body }}
