@@ -1,7 +1,8 @@
 name: CI
 
-# The kit's own checks: the scripts' tests, the template rendered with
-# Copier and checked with the kit's own checks, and the plugin manifests.
+# The kit's own tests: the scripts, the template rendered with Copier and
+# checked with the kit's own checks, and the plugin manifests. The released
+# checks run from knowledge.yml and pr-format.yml, as in any project.
 on:
   push:
     branches: [main]
@@ -43,10 +44,11 @@ jobs:
           REQUIRE_COPIER: 'true'
 
   knowledge:
-    name: Knowledge structure
+    name: Knowledge check from this branch
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
-      # The kit checks its own knowledge/ with the action projects use.
+      # This branch's check on the kit's own knowledge/, so a change to the
+      # check is tried here before it's released.
       - uses: ./checks/knowledge

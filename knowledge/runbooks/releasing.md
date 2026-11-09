@@ -22,6 +22,7 @@ Projects pick up a release three ways, and each needs something from the release
 4. Run the **Release** workflow (`.github/workflows/release.yml`) with the version, such as `1.0.1`. It checks the version against the three files and the existing tags, runs the tests, tags `main` with `v1.0.1`, and moves `v1` to it. Start it from the Actions tab, or from a session with the GitHub MCP `actions_run_trigger` tool (method `run_workflow`, workflow `release.yml`, ref `main`, input `version`). Then read the run's summary.
 5. For a new major version, change `kit_version` in `copier.yml` so new projects call it, and say in the release notes what projects must change.
 6. Open a pull request in `Tukutupap/agent-kit-test` to see the checks run from the new tag ([lesson](/lessons/actions-download-the-whole-kit.md)).
+7. Update the kit's own repository from the release, like any project: an issue, then `copier update --trust --defaults --vcs-ref vX.Y.Z` on a branch from `main`, resolving conflicts in the kit's own sections, in a pull request ([ADR](/decisions/adr/adr-kit-uses-its-own-template.md)).
 
 The release tag is annotated and the major tag lightweight. With two lightweight tags on one commit, Copier recorded `_commit: v1` in a project, and once `v1` moved, `copier update` saw nothing to update (#8). A project that recorded `_commit: v1` needs that line changed by hand to the release it was made from (such as `v1.0.0`) before its next `copier update`.
 

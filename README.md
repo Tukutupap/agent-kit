@@ -89,7 +89,7 @@ Or by hand: `/plugin marketplace add Tukutupap/agent-kit`, then `/plugin install
 
 ## Working on the kit
 
-See [AGENTS.md](AGENTS.md) and [knowledge/](knowledge/index.md). `npm test` runs the tests, and renders the template when Copier is installed. [Releasing](knowledge/runbooks/releasing.md) covers tags and versions.
+This repository uses the kit itself: it's rendered from its own template, recorded in `.copier-answers.yml`, and its pull requests run the checks at `@v1`. See [AGENTS.md](AGENTS.md) and [knowledge/](knowledge/index.md). `npm test` runs the tests, and renders the template when Copier is installed. [Releasing](knowledge/runbooks/releasing.md) covers tags and versions, and running `copier update` here after each one.
 
 ## License
 

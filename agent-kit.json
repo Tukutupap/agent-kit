@@ -1,0 +1,6 @@
+{
+  "$comment": "Settings for the agent kit's checks. Anything left out uses the kit's defaults, listed in scripts/config.mjs at https://github.com/Tukutupap/agent-kit.",
+  "knowledge": {
+    "root": "knowledge"
+  }
+}
