@@ -12,7 +12,7 @@ The kit was built from the first project's repository at commit `97a85fd` (2026-
 | --- | --- | --- |
 | `AGENTS.md`, `CLAUDE.md`, `GEMINI.md` | `template/AGENTS.md.jinja`, `CLAUDE.md.jinja`, `GEMINI.md` | Product sections became placeholders. The conflict order lost the product's contract files. |
 | `knowledge/index.md` | `template/knowledge/index.md.jinja` | Rules and numbering kept; product pages removed. |
-| The four `*-000-template.md` files | `template/knowledge/...` | The ADR template's impact list is generic. The feature template gained its two headings. |
+| The four `*-000-template.md` files | `template/knowledge/...`, as `*-template.md` | The ADR template's impact list is generic. The feature template gained its two headings. Since 1.1.0 they name pages by topic. |
 | `knowledge/decisions/knowledge-base-approach.md` | `template/knowledge/decisions/knowledge-base-approach.md` | Product details removed; the trial's numbers kept. |
 | `knowledge/decisions/issue-workflow.md` | `template/knowledge/decisions/issue-workflow.md.jinja` | People, hosting, board ids and the product's CI checks removed. Board sections only render with a board. |
 | `knowledge/product/acceptance-gates.md` | `template/knowledge/product/acceptance-gates.md` | Gates 1, 11, 12 and 13 became Gates 1 to 4, without file paths. Definition of done generalized. |

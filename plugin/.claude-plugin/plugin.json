@@ -1,6 +1,6 @@
 {
   "name": "agent-kit",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Skills and hooks for projects that keep their knowledge in knowledge/: a knowledge review, a site sweep, and a reminder to update knowledge/ when code changes.",
   "author": {
     "name": "Vicente",

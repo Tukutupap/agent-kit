@@ -12,7 +12,7 @@ What the code can't tell you about the kit itself: why it's built this way, what
 2. Add it when it's learned, not in bulk. One topic per page, and keep pages short.
 3. The code wins. If a page disagrees with the code, trust the code and fix the page.
 4. Never add passwords, keys or tokens. The kit is public.
-5. Each new assumption, decision or gap gets its own file, numbered by its issue, as in a project. The templates are `adr-0000`, `asm-000`, `gap-000` and `fea-000`.
+5. Each new assumption, decision or gap gets its own file, named by its topic, as in a project. The templates are `adr-template.md`, `asm-template.md`, `gap-template.md` and `fea-template.md`. Pages from before 1.1.0 are named by issue number and keep their names.
 6. Add each new page to this index, under its section.
 7. Nothing about a particular product belongs in the kit, here or anywhere else.
 
@@ -25,16 +25,17 @@ Run `npm run knowledge:check` before pushing. CI runs the same check with the ki
 - [ADR 0001: Checks ship as versioned composite actions](/decisions/adr/adr-0001-checks-as-composite-actions.md)
 - [ADR 0001-b: Starter files ship as a Copier template](/decisions/adr/adr-0001-b-copier-template.md)
 - [ADR 0001-c: Skills and the hook ship as a plugin, and can be copied in](/decisions/adr/adr-0001-c-plugin-and-copied-skills.md)
+- [Knowledge pages are named by topic](/decisions/adr/adr-pages-named-by-topic.md)
 
-New ADRs use the [template](/decisions/adr/adr-0000-template.md).
+New ADRs use the [template](/decisions/adr/adr-template.md).
 
 ### Assumptions
 
-Each assumption is a file in `decisions/asm/`, named `asm-NNN-topic.md`. Search that folder by topic or ID. New ones use the [template](/decisions/asm/asm-000-template.md).
+Each assumption is a file in `decisions/asm/`, named `asm-<topic>.md`. Search that folder by topic or ID. New ones use the [template](/decisions/asm/asm-template.md).
 
 ## Product
 
-The kit's parts are described in the [README](https://github.com/Tukutupap/agent-kit#readme). Feature pages, if any, use the [template](/product/features/fea-000-template.md).
+The kit's parts are described in the [README](https://github.com/Tukutupap/agent-kit#readme). Feature pages, if any, use the [template](/product/features/fea-template.md).
 
 ## Runbooks
 
@@ -44,7 +45,7 @@ The kit's parts are described in the [README](https://github.com/Tukutupap/agent
 
 ### Gaps
 
-Each missing, unverified or deferred item is a file in `launch/gaps/`, with `gap_status` `open` or `resolved`. Search that folder by topic, ID or status. New ones use the [template](/launch/gaps/gap-000-template.md).
+Each missing, unverified or deferred item is a file in `launch/gaps/`, with `gap_status` `open` or `resolved`. Search that folder by topic, ID or status. New ones use the [template](/launch/gaps/gap-template.md).
 
 ## Lessons
 

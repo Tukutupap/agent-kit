@@ -53,13 +53,13 @@ PR_TITLE="Add search" PR_BODY="$(cat body.md)" npx --yes github:Tukutupap/agent-
 
 ## Configure the checks
 
-`agent-kit.json` at the project root changes what the knowledge check expects. Anything left out keeps the default, which matches the template. For example, to number RFCs and stop numbering feature pages:
+`agent-kit.json` at the project root changes what the knowledge check expects. Anything left out keeps the default, which matches the template. For example, to give RFCs their own IDs, named like `rfc-<topic>.md`, and stop checking feature page names:
 
 ```json
 {
   "knowledge": {
     "numbered": {
-      "decisions/rfc": { "prefix": "RFC", "digits": 3 },
+      "decisions/rfc": { "prefix": "RFC" },
       "product/features": null
     },
     "notInIndex": ["decisions/asm/", "launch/gaps/", "sweeps/"]

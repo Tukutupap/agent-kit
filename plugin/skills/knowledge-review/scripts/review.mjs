@@ -60,7 +60,8 @@ const REPO_PATH = new RegExp(
 );
 // Files that count as code: anything outside the knowledge folder that isn't Markdown.
 const isCode = (file) => file && !file.startsWith(`${root}/`) && !/\.md$/i.test(file);
-const ID = /\b(GAP|ASM|ADR)[- ](\d{3,5})(-[b-z])?\b/g;
+// Older IDs are numbers, such as ASM-298-b or ADR 0298. Newer ones are topics, such as ASM-client-ip.
+const ID = /\b(GAP|ASM|ADR)(?:[- ](\d{3,5})(-[b-z])?|-([a-z][a-z0-9]*(?:-[a-z0-9]+)*))\b/g;
 const STALE_WORDS =
   /before merge|not (?:yet )?deployed|until deployed|pending CI|this (?:change|PR|pull request|follow-up|task)\b|on a review branch|Wave \d|needs? owner confirmation/i;
 const REPLACED_WORDS = /\bsupersede[sd]?\b|\boverrides?\b|replaced by/i;
@@ -138,8 +139,8 @@ for (const page of [
 ]) {
   // The index explains numbering with made-up IDs.
   const ids = page.name === `${root}/index.md` ? [] : page.text.matchAll(ID);
-  for (const [, kind, number, letter = ''] of ids) {
-    const id = `${kind}-${number}${letter}`;
+  for (const [, kind, number, letter = '', topic] of ids) {
+    const id = topic ? `${kind}-${topic}` : `${kind}-${number}${letter}`;
     if (!known.has(id) && !/^(GAP|ASM|ADR)-0+$/.test(id)) deadIds.push(`${page.name}: ${id}`);
   }
   for (const [, path] of page.text.matchAll(REPO_PATH)) {

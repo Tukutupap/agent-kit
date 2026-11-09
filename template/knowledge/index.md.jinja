@@ -20,10 +20,10 @@ The only home for what the code can't tell you: product specs, decisions, how th
 
 Update this folder in the same pull request as the work. `AGENTS.md` section 2 says what to do for each kind of change.
 
-- **New:** copy the template in the folder, number it with the issue it belongs to, and fill in the header, including a one-sentence `description`. An assumption from issue 298 is `asm-298-topic.md` with `id: ASM-298`. ADRs use four digits, as in `adr-0298-topic.md`. When one issue creates more than one file of the same kind, the first has no letter, the second adds `-b`, the third `-c`, and so on: `asm-298-topic.md`, `asm-298-b-topic.md` with `id: ASM-298-b`. This works the same for assumptions, gaps, ADRs and feature pages. Files of different kinds don't need a letter, so `ASM-298` and `GAP-298` can both exist. Issue numbers are safe when pull requests run in parallel, and a next free number isn't, because each branch sees the same one. The templates are `adr-0000`, `asm-000`, `gap-000` and `fea-000`.
+- **New:** copy the template in the folder, name it by its topic, and fill in the header, including a one-sentence `description`. The topic is a few lowercase words joined by hyphens, and the name after the prefix is the ID: an assumption about client IPs behind a proxy is `asm-client-ip-behind-a-proxy.md` with `id: ASM-client-ip-behind-a-proxy`. This works the same for assumptions, gaps, ADRs and feature pages. Keep the name once it's merged, because other pages refer to it. Pull requests running in parallel only clash if they pick the same name, and the check catches that. Older pages named by issue number, such as `asm-298-topic.md` with `id: ASM-298`, keep their names. The templates are `adr-template.md`, `asm-template.md`, `gap-template.md` and `fea-template.md`.
 - **Changed:** edit the page. For a feature, keep its `## Product requirements` section accurate, and put a change that overrides it in the [Later decisions](/product/prd.md) table.
 - **Finished:** set a gap's `gap_status` to `resolved` and its `status` to `deprecated`, and add a short `## Status` section saying why.
-- **Replaced:** add `superseded_by: ASM-NNN` to the old assumption's header, or set an ADR's `adr_status` to `Superseded`, and add `status: deprecated` to either. Keep the old file, because it records why things were done.
+- **Replaced:** add `superseded_by:` with the new assumption's ID to the old assumption's header, or set an ADR's `adr_status` to `Superseded`, and add `status: deprecated` to either. Keep the old file, because it records why things were done.
 - **Status:** `status` is the Open Knowledge Format's lifecycle field, so it only takes `draft`, `stable` or `deprecated`, and leaving it out means `stable`. Gaps keep their own state in `gap_status`, and ADRs in `adr_status`.
 - **Obsolete:** delete pages that are simply no longer true. Git keeps them.
 
@@ -36,7 +36,7 @@ Before pushing, run `npx --yes github:{{ kit_repo }}#{{ kit_version }} knowledge
 
 ### Features
 
-One page per feature, in `product/features/`, named `fea-NNN-topic.md`. These are the functional specs. Each has its product requirements at the top, which carry PRD precedence, and functional detail below. New features take their issue's number and use the [template](/product/features/fea-000-template.md).
+One page per feature, in `product/features/`, named `fea-<topic>.md`. These are the functional specs. Each has its product requirements at the top, which carry PRD precedence, and functional detail below. New features use the [template](/product/features/fea-template.md).
 
 <!-- List feature pages here as they're added, grouped by who uses them. -->
 
@@ -47,13 +47,13 @@ One page per feature, in `product/features/`, named `fea-NNN-topic.md`. These ar
 
 ### Architecture decisions
 
-New ADRs use the [template](/decisions/adr/adr-0000-template.md).
+New ADRs use the [template](/decisions/adr/adr-template.md).
 
 <!-- List ADRs here as they're added. -->
 
 ### Assumptions
 
-Each assumption is a file in `decisions/asm/`, named `asm-NNN-topic.md`. Find them by searching that folder for a topic or an ID, such as ASM-021. They aren't listed here, because a shared list would collide on every new one. New assumptions take their issue's number and use the [template](/decisions/asm/asm-000-template.md).
+Each assumption is a file in `decisions/asm/`, named `asm-<topic>.md`. Find them by searching that folder for a topic or an ID. They aren't listed here, because a shared list would collide on every new one. New assumptions use the [template](/decisions/asm/asm-template.md).
 
 ## Environment
 
@@ -63,7 +63,7 @@ Each assumption is a file in `decisions/asm/`, named `asm-NNN-topic.md`. Find th
 
 ### Gaps
 
-Each mock, deferred item or launch risk is a file in `launch/gaps/`, with a status of `open` or `resolved` in its header. Search that folder by topic, ID or status. New gaps take their issue's number and use the [template](/launch/gaps/gap-000-template.md).
+Each mock, deferred item or launch risk is a file in `launch/gaps/`, with a status of `open` or `resolved` in its header. Search that folder by topic, ID or status. New gaps use the [template](/launch/gaps/gap-template.md).
 
 ## Lessons
 
