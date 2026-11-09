@@ -2,8 +2,6 @@
 
 Everything a product needs so AI coding agents work on it the same way every time: rules they follow, a knowledge base they keep current, skills for reviews and sweeps, and GitHub checks that keep the format honest. Start a project with it, and pick up later improvements without losing the project's own edits.
 
-It came out of a real product, where the setup was built and tested. Only the generic parts are here.
-
 ## What's in it
 
 | Part | What it gives a project | How updates arrive |
