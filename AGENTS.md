@@ -70,7 +70,7 @@ Never choose implementation convenience over security, privacy, trust or payment
 3. Its agents follow `AGENTS.md`, keep `knowledge/` current, and use the knowledge-review and site-sweep skills and the knowledge reminder hook.
 4. After a release, `copier update` brings in the kit's changes and keeps the project's own edits, and the moved `v1` tag or a Dependabot bump brings in the checks.
 
-This repository is both the kit and its first project: it's rendered from its own `template/`, so every step above must keep working here too.
+This repository is both the kit and a project that uses it: it's rendered from its own `template/`, so every step above must keep working here too.
 
 ### Security rules
 

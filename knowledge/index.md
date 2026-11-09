@@ -83,7 +83,6 @@ Each mock, deferred item or launch risk is a file in `launch/gaps/`, with a stat
 ## References
 
 - [Site sweeps](/references/site-sweeps.md): The sweeps this product runs, what each one checks, and where reports live.
-- [Source map](/references/source-map.md): Where each part of the kit came from, so improvements can flow both ways.
 
 ## Sweeps
 
