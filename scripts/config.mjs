@@ -9,7 +9,9 @@ export const CONFIG_FILE = 'agent-kit.json';
 export const DEFAULTS = {
   knowledge: {
     root: 'knowledge',
-    // Folders whose files are numbered by the issue they belong to.
+    // Folders with one ID per file. New files are named by topic, and the prefix
+    // starts the ID. `digits` is the width of older files named by issue number.
+    // The key keeps its old name so existing agent-kit.json files still work.
     numbered: {
       'decisions/adr': { prefix: 'ADR', digits: 4 },
       'decisions/asm': { prefix: 'ASM', digits: 3 },

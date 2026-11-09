@@ -1,6 +1,6 @@
 {
   "name": "agent-kit",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Rules, knowledge base, checks and skills for projects built with AI coding agents.",
   "license": "MIT",
   "private": true,

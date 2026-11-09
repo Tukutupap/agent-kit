@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { merge, DEFAULTS } from '../scripts/config.mjs';
-import { checkKnowledge, numberPattern } from '../scripts/knowledge-check.mjs';
+import { checkKnowledge, idFor, numberPattern, topicPattern } from '../scripts/knowledge-check.mjs';
 
 // Every page needs a description, so fixtures get one unless a test passes null.
 const page = (fields, body = '# Page\n') =>
@@ -245,6 +245,46 @@ test('numbered names follow the width', () => {
   assert.match('adr-0001-b-one.md', pattern);
   assert.doesNotMatch('adr-001-one.md', pattern);
   assert.doesNotMatch('adr-01234-one.md', pattern);
+});
+
+test('a page named by topic passes, with the topic as its id', () => {
+  const problems = check({
+    'index.md': 'Index',
+    'decisions/asm/asm-client-ip-behind-a-proxy.md': page({
+      type: 'Assumption',
+      id: 'ASM-client-ip-behind-a-proxy',
+      title: 'Client IP',
+    }),
+    'decisions/asm/asm-001-one.md': asm,
+  });
+  assert.deepEqual(problems, []);
+});
+
+test('a page named by topic needs that topic as its id', () => {
+  const problems = check({
+    'index.md': 'Index',
+    'decisions/asm/asm-client-ip.md': page({ type: 'Assumption', id: 'ASM-001', title: 'Client IP' }),
+  });
+  assert.deepEqual(problems, ['decisions/asm/asm-client-ip.md: header id should be ASM-client-ip']);
+});
+
+test('topic names are lowercase words joined by hyphens', () => {
+  const pattern = topicPattern({ prefix: 'ASM' });
+  assert.match('asm-client-ip.md', pattern);
+  assert.match('asm-v2-search.md', pattern);
+  assert.doesNotMatch('asm-Client-IP.md', pattern);
+  assert.doesNotMatch('asm-client--ip.md', pattern);
+  assert.doesNotMatch('asm-client-ip-.md', pattern);
+  assert.doesNotMatch('asm-client_ip.md', pattern);
+  assert.equal(idFor({ prefix: 'ADR', digits: 4 }, 'adr-0298-b-search.md').id, 'ADR-0298-b');
+  assert.equal(idFor({ prefix: 'ADR', digits: 4 }, 'adr-search-engine.md').id, 'ADR-search-engine');
+});
+
+test('templates under either name have no id or state', () => {
+  const template = page({ type: 'Gap', id: 'GAP-topic', title: 'Short title' });
+  for (const name of ['gap-template.md', 'gap-000-template.md']) {
+    assert.deepEqual(check({ 'index.md': 'Index', [`launch/gaps/${name}`]: template }), []);
+  }
 });
 
 test('a missing folder fails', () => {

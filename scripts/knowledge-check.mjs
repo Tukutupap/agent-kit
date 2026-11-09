@@ -12,13 +12,30 @@ import { DEFAULTS, loadConfig } from './config.mjs';
 // states use other fields, such as gap_status and adr_status.
 const OKF_STATUSES = ['draft', 'stable', 'deprecated'];
 
-// New files use their issue's number, with a letter for a second file from one
-// issue. Numbers are padded to the folder's width and never padded past it.
-export const numberPattern = ({ prefix, digits }) => {
+// New files are named by topic, and the name after the prefix is the ID:
+// asm-client-ip.md is ASM-client-ip. Older files named by issue number, with a
+// letter for a second file from one issue, still pass. Their numbers are padded
+// to the folder's width and never padded past it.
+export const numberPattern = ({ prefix, digits = 3 }) => {
   const lower = prefix.toLowerCase();
   return new RegExp(
     `^${lower}-(\\d{${digits}}|[1-9]\\d{${digits},})(-[b-z])?-[a-z0-9-]+\\.md$`,
   );
+};
+
+export const topicPattern = ({ prefix }) =>
+  new RegExp(`^${prefix.toLowerCase()}-([a-z][a-z0-9]*(?:-[a-z0-9]+)*)\\.md$`);
+
+// The ID a file name gives, or null if the name follows neither format.
+// Templates have no ID of their own.
+export const idFor = (rule, base) => {
+  const topic = base.match(topicPattern(rule));
+  if (topic) return { id: `${rule.prefix}-${topic[1]}`, template: topic[1] === 'template' };
+  const numbered = base.match(numberPattern(rule));
+  if (numbered) {
+    return { id: `${rule.prefix}-${numbered[1]}${numbered[2] ?? ''}`, template: Number(numbered[1]) === 0 };
+  }
+  return null;
 };
 
 const pages = (directory) =>
@@ -50,12 +67,7 @@ const linkProblems = (root, file, name, text) => {
 };
 
 export function checkKnowledge(root, options = DEFAULTS.knowledge) {
-  const numberedFolders = Object.fromEntries(
-    Object.entries(options.numbered ?? {}).map(([folder, rule]) => [
-      folder,
-      { ...rule, pattern: numberPattern(rule) },
-    ]),
-  );
+  const numberedFolders = options.numbered ?? {};
   const notInIndex = options.notInIndex ?? [];
   const problems = [];
   const ids = new Map();
@@ -82,21 +94,18 @@ export function checkKnowledge(root, options = DEFAULTS.knowledge) {
     const folder = dirname(name);
     const numbered = numberedFolders[folder];
     const base = name.slice(folder.length + 1);
-    if (numbered) {
-      const match = base.match(numbered.pattern);
-      if (!match) {
-        problems.push(`${name}: file name doesn't follow the folder's format`);
-      } else if (Number(match[1]) !== 0) {
-        const id = `${numbered.prefix}-${match[1]}${match[2] ?? ''}`;
-        if (fields.id !== id) problems.push(`${name}: header id should be ${id}`);
-        ids.set(id, [...(ids.get(id) ?? []), name]);
-      }
+    const named = numbered ? idFor(numbered, base) : null;
+    if (numbered && !named) {
+      problems.push(`${name}: file name doesn't follow the folder's format`);
+    } else if (named && !named.template) {
+      if (fields.id !== named.id) problems.push(`${name}: header id should be ${named.id}`);
+      ids.set(named.id, [...(ids.get(named.id) ?? []), name]);
     }
     if (fields.status && !OKF_STATUSES.includes(fields.status)) {
       problems.push(`${name}: status must be one of ${OKF_STATUSES.join(', ')}`);
     }
     const state = numbered?.state;
-    const isTemplate = numbered && /^[a-z]+-0+-/.test(base);
+    const isTemplate = Boolean(named?.template);
     if (state && !isTemplate && !state.values.includes(fields[state.field])) {
       problems.push(`${name}: ${state.field} must be one of ${state.values.join(', ')}`);
     }

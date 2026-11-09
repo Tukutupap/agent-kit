@@ -28,7 +28,7 @@ If a page disagrees with the code, trust the code and fix the page in the same p
 
 Don't keep project knowledge in private agent memory, or in Markdown files outside `knowledge/`. Private memory is only for what's personal or specific to one machine.
 
-Page formats and rules are at the top of `knowledge/index.md`. Each folder with numbered files has a template.
+Page formats and rules are at the top of `knowledge/index.md`. Each folder of assumptions, decisions, gaps and features has a template.
 
 To review `knowledge/` itself, use the knowledge-review skill. For a sweep of the product, to find bugs, weak points and security holes, use the site-sweep skill, which reads this project's sweeps from `knowledge/references/site-sweeps.md`.
 {%- if skills_from == 'repo' %} Both are in `.agents/skills`, and `.claude/skills` links to the same folders for Claude Code. Agents that support skills find them there on their own; others read the `SKILL.md` and follow it.
