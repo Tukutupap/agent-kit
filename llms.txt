@@ -1,0 +1,8 @@
+# Agent kit
+
+> Rules, a knowledge base, skills and GitHub checks that give any product the same AI coding agent setup, kept current with Copier.
+
+To add the kit to a repository, follow the step-by-step guide for agents. It needs no prompts and works in cloud sessions.
+
+- [Add the agent kit to a repository](https://raw.githubusercontent.com/Tukutupap/agent-kit/main/INSTALL.md): Copier answers, keeping existing files, the pull request, and what the person does afterwards.
+- [README](https://raw.githubusercontent.com/Tukutupap/agent-kit/main/README.md): What's in the kit and how updates arrive.

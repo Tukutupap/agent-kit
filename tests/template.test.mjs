@@ -191,3 +191,35 @@ test('copier records the exact release and updates to the next one', { skip: !co
     rmSync(work, { recursive: true, force: true });
   }
 });
+
+// INSTALL.md tells agents to pass every answer with --data. A new question in
+// copier.yml has to be added to the guide too, or agents won't know to answer it.
+test('the install guide covers every Copier question', () => {
+  const guide = readFileSync(join(kit, 'INSTALL.md'), 'utf8');
+  const questions = readFileSync(join(kit, 'copier.yml'), 'utf8')
+    .split('\n')
+    .filter((line) => /^[a-z][a-z_]*:/.test(line))
+    .map((line) => line.split(':')[0])
+    .filter((name) => !['kit_repo', 'kit_version'].includes(name));
+  assert.ok(questions.includes('product_name'));
+  for (const name of questions) assert.ok(guide.includes(`\`${name}\``), `INSTALL.md doesn't mention ${name}`);
+});
+
+// The guide's non-interactive copy into a repository that already has some of
+// the kit's files: it has to write every file, replacing the existing ones.
+test('the install guide’s copy works on a repository with existing files', { skip: !copier }, () => {
+  const out = mkdtempSync(join(tmpdir(), 'agent-kit-adopt-'));
+  try {
+    execFileSync('sh', ['-c', 'mkdir -p .github && echo "# Old rules" > CLAUDE.md && echo "## Summary" > .github/pull_request_template.md'], { cwd: out });
+    const data = ['-d', 'product_name=Sample', '-d', 'github_owner=someone', '-d', 'test_command=pnpm test'];
+    execFileSync('copier', ['copy', '--defaults', '--overwrite', '--quiet', '--vcs-ref', 'HEAD', ...data, kit, out], {
+      stdio: 'pipe',
+    });
+    assert.match(readFileSync(join(out, 'CLAUDE.md'), 'utf8'), /@AGENTS\.md/);
+    assert.match(readFileSync(join(out, '.github/pull_request_template.md'), 'utf8'), /## What this fixes/);
+    assert.ok(existsSync(join(out, '.github/workflows/pr-format.yml')));
+    assert.deepEqual(checkKnowledge(join(out, 'knowledge')), []);
+  } finally {
+    rmSync(out, { recursive: true, force: true });
+  }
+});

@@ -10,7 +10,7 @@ description: Which suite covers what, how to run it locally, and how CI behaves 
 
 ## Locally
 
-`npm test` runs the full suite: the scripts' unit tests, the plugin manifests, the symlink and skill-copy checks, and, with Copier installed (`pip install 'copier>=9.4,<10'`), the template rendered both ways and checked with the kit's own checks. Set `REQUIRE_COPIER=true` to fail instead of skipping when Copier is missing. Run it before opening a pull request ready for review.
+`npm test` runs the full suite: the scripts' unit tests, the plugin manifests, the symlink and skill-copy checks, and, with Copier installed (`pip install 'copier>=9.4,<10'`), the template rendered both ways and checked with the kit's own checks, and the install guide's copy into a repository that already has files. A test also fails when a question in `copier.yml` is missing from `INSTALL.md`. Set `REQUIRE_COPIER=true` to fail instead of skipping when Copier is missing. Run it before opening a pull request ready for review.
 
 - `npm run knowledge:check` checks `knowledge/` with this branch's check.
 - `PR_TITLE=... PR_BODY="$(cat body.md)" npm run pr:check` checks a pull request's title and description.

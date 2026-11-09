@@ -2,6 +2,10 @@
 
 Everything a product needs so AI coding agents work on it the same way every time: rules they follow, a knowledge base they keep current, skills for reviews and sweeps, and GitHub checks that keep the format honest. Start a project with it, and pick up later improvements without losing the project's own edits.
 
+## For AI agents
+
+If someone asked you to add this kit to their repository, follow [INSTALL.md](INSTALL.md) ([raw](https://raw.githubusercontent.com/Tukutupap/agent-kit/main/INSTALL.md)). It works without prompts, in cloud sessions too, keeps the repository's existing agent rules and templates, and ends with one pull request and a short list of what the person must do.
+
 ## What's in it
 
 | Part | What it gives a project | How updates arrive |
@@ -14,7 +18,7 @@ A project's own `knowledge/` content is never touched by any of these.
 
 ## Start a project
 
-You need Python with Copier (`pipx install copier` or `pip install copier`) and Node 20 or later.
+To have an agent do this, give it this repository's link and ask it to add the kit; it follows [INSTALL.md](INSTALL.md). By hand, you need Python with Copier (`pipx install copier` or `pip install copier`) and Node 20 or later.
 
 ```sh
 cd my-product
