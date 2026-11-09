@@ -42,6 +42,8 @@ One page per feature, in `product/features/`, named `fea-<topic>.md`. These are 
 
 <!-- List feature pages here as they're added, grouped by who uses them. -->
 
+- [Agents add the kit from its link](/product/features/fea-agent-install.md): The install guide an agent follows to add the kit to a repository.
+
 ## Decisions
 
 - [How we work on issues](/decisions/issue-workflow.md): Proposals first, the issue and pull request formats, and how issues are discussed, built, reviewed and merged.
