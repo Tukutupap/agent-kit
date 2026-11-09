@@ -13,11 +13,7 @@ area: "Kit"
 
 ## Gap
 
-The first version was tested locally: the scripts' tests, rendering the template both ways, the rendered project passing the knowledge check, and the hook in a scratch git repository. Verified on 2026-11-08 in `Tukutupap/agent-kit-test`:
-
-- The actions running in a project's workflows from the `v1` tag. `v1.0.0` failed to download, fixed in #4 ([lesson](/lessons/actions-download-the-whole-kit.md)).
-- `copier update` from `v1.0.0` to `v1.0.2`. It needed annotated release tags and skill links that work when rendered from a tag, fixed in #8.
-- Releasing from the Release workflow, with no terminal.
+The first version was tested locally: the scripts' tests, rendering the template both ways, the rendered project passing the knowledge check, and the hook in a scratch git repository. On 2026-11-08, `Tukutupap/agent-kit-test` verified the actions running from the `v1` tag, `copier update` from `v1.0.0` to `v1.0.2`, and releasing from the Release workflow. What broke along the way is in the [lesson](/lessons/actions-download-the-whole-kit.md).
 
 Still untested:
 
